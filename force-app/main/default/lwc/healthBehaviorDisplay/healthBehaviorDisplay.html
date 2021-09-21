@@ -1,11 +1,17 @@
 <template>
-    <lightning-card title="Health Behavior" icon-name="custom:custom14">
-        <div class="slds-var-m-around_medium">
-           <template for:each={contacts} for:item="contact">
-              <div key={contact.id}>
-                 {contact.Name}, {contact.Title}
-              </div>
-           </template>
-</div>
+   <lightning-card title="Health Behavior" icon-name="custom:custom14">
+      <template if:true={account.data}>
+         <div class="slds-var-m-around_medium" >
+            <p>Health Behavior of {name}</p>
+            <p>{account.data.fields.High_number_of_drinks__pc.value}</p>
+            <p>{alcohol}</p>
+            <p>{criticisedForAlcohol}</p>
+            <p>{morningDringking}</p>
+            <p>{account.data.fields.Guilt_about_Drinking__pc.value}</p>
+            <p>{str}</p>
+         </div>
+
+      </template>
+
 </lightning-card>
 </template>
