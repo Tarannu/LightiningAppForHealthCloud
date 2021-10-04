@@ -4,7 +4,16 @@
           <div class="slds-m-around_medium">
              <p>{name} has following care plan reccomendations {carePlanRecommendations}</p>
             
+            
           </div>
        </template>
+<template if:true={careObsList.data}>
+         <div class="slds-m-around_medium">
+            <p>The care observations are {careObservation}</p>
+           
+           
+         </div>
+      </template>
+
 </lightning-card>
 </template>
