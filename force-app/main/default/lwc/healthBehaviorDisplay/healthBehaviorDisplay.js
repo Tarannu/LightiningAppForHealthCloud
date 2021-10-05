@@ -15,7 +15,7 @@ export default class HealthBehaviorDisplay extends LightningElement {
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     account;
 
-    @wire(getCareObservation, { accountId: '$recordId', fields: CRFIELDS })
+    @wire(getCareObservation, { accountId: '$recordId' })
     careObsList;
 
     get name() {
@@ -25,7 +25,20 @@ export default class HealthBehaviorDisplay extends LightningElement {
         return this.account.data.fields.Care_Plan_Recommendations__pc.value;
     }
     get careObservation() {
-        return this.careObsList.data.fields.Name.value;
+        var response = JSON.parse(JSON.stringify(this.careObsList.data));
+        var name = response.map(obj => {
+            if (obj.Name == "BMI" && obj.NumericValue > 170) {
+                var result = "Since BMI is greater than 170 health is not good";
+            } else {
+                //result = `Result for ${obj.Name} is ok`;
+
+            }
+            return result;
+        })
+
+        return name;
+
+        //this.careObsList.data;
     }
 
 
