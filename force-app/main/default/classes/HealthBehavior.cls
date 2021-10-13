@@ -3,7 +3,7 @@ public with sharing class HealthBehavior {
     public static List<CareObservation> relatedObservation(Id accountId){
         
         List <CareObservation> careObs = [
-            SELECT Name, CodeId, Category, NumericValue, ObservedSubjectId
+            SELECT Name, CodeId, Category, NumericValue, ObservedSubjectId,ObservedValueText
             FROM CareObservation 
             Where ObservedSubjectId = :accountId
             WITH SECURITY_ENFORCED

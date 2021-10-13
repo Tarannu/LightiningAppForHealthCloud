@@ -1,17 +1,15 @@
 <template>
-    <lightning-card title="Health Behavior" icon-name="custom:custom14">
-       <template if:true={account.data}>
-          <div class="slds-m-around_medium">
-             <p>{name} has following care plan reccomendations {carePlanRecommendations}</p>
-            
-            
-          </div>
-       </template>
-<template if:true={careObsList.data}>
+   <lightning-card title="Health Behavior" icon-name="custom:custom14">
+      <template if:true={account.data}>
          <div class="slds-m-around_medium">
-            <p>The care observations are {careObservation}</p>
-           
-           
+            <p><strong>{name}</strong> has following care plan reccomendations
+              <span class="carePlan"> {carePlanRecommendations}</span></p>
+         </div>
+      </template>
+<template if:true={careObsList.data}>
+
+         <div class="slds-m-around_medium">
+            <p>The dietary Habit Score is <span class={careObservation.score}><strong>{careObservation.score}</strong></span> [ <strong> { careObservation.value }</strong> ]</p>
          </div>
       </template>
 

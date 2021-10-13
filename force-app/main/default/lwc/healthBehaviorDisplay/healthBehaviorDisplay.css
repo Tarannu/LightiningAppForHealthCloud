@@ -1,0 +1,19 @@
+.Excellent {
+    color: green;
+}
+
+.Good {
+    color: #9BED24;
+}
+
+.Fair {
+    color: darkgoldenrod;
+}
+
+.Poor {
+    color: red;
+}
+
+.carePlan {
+    color: blue;
+}

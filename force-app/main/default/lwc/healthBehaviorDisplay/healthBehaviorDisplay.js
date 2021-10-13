@@ -5,11 +5,9 @@ const FIELDS = [
     'Account.Name',
     'Account.Care_Plan_Recommendations__pc'
 ]
-const CRFIELDS = [
-    'CareObservation.Name',
-    'CareObservation.ObservedSubjectId'
-]
+
 export default class HealthBehaviorDisplay extends LightningElement {
+
     @api recordId;
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
@@ -26,20 +24,155 @@ export default class HealthBehaviorDisplay extends LightningElement {
     }
     get careObservation() {
         var response = JSON.parse(JSON.stringify(this.careObsList.data));
-        var name = response.map(obj => {
-            if (obj.Name == "BMI" && obj.NumericValue > 170) {
-                var result = "Since BMI is greater than 170 health is not good";
-            } else {
-                //result = `Result for ${obj.Name} is ok`;
+        var dietScore = 0;
+        var result = {
+            score: '',
+            value: 0
+        };
+        var output = response.find(obj => {
+            // ADD CreatedDate logic to find latest input
+            // BMI Dietscore
+            if (obj.Name == "BMI") {
+                if (obj.NumericValue < 18.5) dietScore += 1;
+                else if (obj.NumericValue <= 24.9) dietScore += 0;
+                else if (obj.NumericValue <= 29.9) dietScore += 1;
+                else if (obj.NumericValue <= 39.9) dietScore += 2;
+                else dietScore += 3;
+                console.log("BMI Numberic value is " + obj.NumericValue);
+            }
+            //ADD DIABETES DIETSCORE
+            //Whole Grain scores 
+            if (obj.Name == "More Than Half Bread Whole Grain" && obj.ObservedValueText == "true") {
+                dietScore += 1;
 
             }
-            return result;
+
+            // Unintentional Weight Score 
+            if (obj.Name == 'Unintentional Weight Loss Or Gain') {
+
+                if (obj.ObservedValueText == 'No Weight Loss or Gain') dietScore += 0;
+                else if (obj.ObservedValueText == '1-2 lbs') dietScore += 1;
+                else if (obj.ObservedValueText == '3-5 lbs') dietScore += 2;
+                else if (obj.ObservedValueText == '7-10 lbs') dietScore += 3;
+
+            }
+
+            // Fruit Score 
+            if (obj.Name == 'Serving Of Fruits Per Day') {
+                if (obj.ObservedValueText == '0') dietScore += 5;
+                else if (obj.ObservedValueText == '1 Serving') dietScore += 3;
+                else if (obj.ObservedValueText == '2-3 Servings') dietScore += 2;
+                else if (obj.ObservedValueText == '4-5 Servings') dietScore += 1;
+                else if (obj.ObservedValueText == '6+ Servings') dietScore += 0;
+            }
+            // Vegetable Score 
+            if (obj.Name == 'Serving Of Vegetables Per Day') {
+                if (obj.ObservedValueText == '0') dietScore += 5;
+                else if (obj.ObservedValueText == '1 Serving') dietScore += 3;
+                else if (obj.ObservedValueText == '2-3 Servings') dietScore += 2;
+                else if (obj.ObservedValueText == '4-5 Servings') dietScore += 1;
+                else if (obj.ObservedValueText == '6+ Servings') dietScore += 0;
+            }
+            // Alcohol per day score
+            if (obj.Name == 'Serving Of Alcohol Per Day') {
+                if (obj.ObservedValueText == '0-1 drinks') dietScore += 0;
+                else if (obj.ObservedValueText == '2-3 drinks') dietScore += 1;
+                else if (obj.ObservedValueText == '4-5 drinks') dietScore += 2;
+                else if (obj.ObservedValueText == '6+ drinks') dietScore += 3;
+            }
+            // Dairy Product Score
+            if (obj.Name == 'Num Dairy Products Per Day') {
+                if (obj.ObservedValueText == 'I Usually Do Not Eat Dairy') dietScore += 0;
+                else if (obj.ObservedValueText == '1-2 Products') dietScore += 1;
+                else if (obj.ObservedValueText == '2-3 Products') dietScore += 2;
+                else if (obj.ObservedValueText == 'I Have A Dairy Sensitivity') dietScore += 0;
+            }
+            // Eat Out Frequency
+            if (obj.Name == 'Eat Out Frequency') {
+                if (obj.ObservedValueText == 'Never') dietScore += 0;
+                else if (obj.ObservedValueText == 'Rarely') dietScore += 1;
+                else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
+                else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
+            }
+            // Sugar Drink Score
+            if (obj.Name == 'Sugar-Sweetened Drinks Per Day') {
+                if (obj.ObservedValueText == '0') dietScore += 0;
+                else if (obj.ObservedValueText == '1 Drink') dietScore += 1;
+                else if (obj.ObservedValueText == '2-3 drinks') dietScore += 2;
+                else if (obj.ObservedValueText == '4-5 drinks') dietScore += 3;
+                else if (obj.ObservedValueText == '6+ drinks') dietScore += 4;
+            }
+            // Self rating
+            if (obj.Name == 'Eating Habit Self Rating') {
+                if (obj.ObservedValueText == 'Excellent') dietScore += 0;
+                else if (obj.ObservedValueText == 'Good') dietScore += 1;
+                else if (obj.ObservedValueText == 'Fair') dietScore += 2;
+                else if (obj.ObservedValueText == 'Poor') dietScore += 3;
+            }
+
+            // Meals eaten per day score
+            if (obj.Name == 'Meals Eaten Per Day') {
+                if (obj.ObservedValueText == '1 Meal') dietScore += 3;
+                else if (obj.ObservedValueText == '2 Meals') dietScore += 2;
+                else if (obj.ObservedValueText == '3 Meals') dietScore += 0;
+                else if (obj.ObservedValueText == '4+ Meals') dietScore += 1;
+            }
+            // ADD NOT ENOUGH MONEY SCORE
+
+            // Add Butter Frequency Score
+            if (obj.Name == 'Butter Frequency') {
+                if (obj.ObservedValueText == 'Never') dietScore += 0;
+                else if (obj.ObservedValueText == 'Rarely') dietScore += 1;
+                else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
+                else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
+            }
+            // Pre-packaged Snack Frequency
+            if (obj.Name == 'Pre-packaged Snack Frequency') {
+                if (obj.ObservedValueText == 'Never') dietScore += 0;
+                else if (obj.ObservedValueText == 'Rarely') dietScore += 1;
+                else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
+                else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
+            }
+            // Eat Chicken/Turkey/Fish Frequency
+            if (obj.Name == 'Eat Chicken/Turkey/Fish Frequency') {
+                if (obj.ObservedValueText == 'Never') dietScore += 3;
+                else if (obj.ObservedValueText == 'Rarely') dietScore += 2;
+                else if (obj.ObservedValueText == 'Sometimes') dietScore += 1;
+                else if (obj.ObservedValueText == 'Most of the time') dietScore += 0;
+            }
+            // Eat Beef/Pork/Lamb/Organ Frequency
+            if (obj.Name == 'Eat Beef/Pork/Lamb/Organ Frequency') {
+                if (obj.ObservedValueText == 'Never') dietScore += 0;
+                else if (obj.ObservedValueText == 'Rarely') dietScore += 1;
+                else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
+                else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
+            }
+            // Eat Dessert/Sweets Frequency
+            if (obj.Name == 'Eat Dessert/Sweets Frequency') {
+                if (obj.ObservedValueText == 'Never') dietScore += 0;
+                else if (obj.ObservedValueText == 'Rarely') dietScore += 1;
+                else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
+                else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
+            }
+            // Deciding diet score
+            if (dietScore < 17) { // add 3 if you add the money problem
+                result.score = 'Excellent';
+                result.value = dietScore;
+            } else if (dietScore < 32) { // add 3 if you add the money problem
+                result.score = 'Good';
+                result.value = dietScore;
+            } else if (dietScore < 47) { // add 3 if you add the money problem
+                result.score = 'Fair';
+                result.value = dietScore;
+            } else {
+                result.score = 'Poor';
+                result.value = dietScore;
+            }
         })
 
-        return name;
-
-        //this.careObsList.data;
+        return result;
     }
+
 
 
 }
