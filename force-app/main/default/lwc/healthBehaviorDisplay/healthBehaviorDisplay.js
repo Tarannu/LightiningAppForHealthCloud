@@ -25,35 +25,45 @@ export default class HealthBehaviorDisplay extends LightningElement {
     get careObservation() {
         var response = JSON.parse(JSON.stringify(this.careObsList.data));
         var dietScore = 0;
+        var maxBMIDate = new Date("1961-10-10");
+        var maxGrainDate = new Date("1961-10-10");
+        var maxWeightDate = new Date("1961-10-10");
         var result = {
             score: '',
             value: 0
         };
         var output = response.find(obj => {
             // ADD CreatedDate logic to find latest input
+            var currentDate;
             // BMI Dietscore
             if (obj.Name == "BMI") {
-                if (obj.NumericValue < 18.5) dietScore += 1;
-                else if (obj.NumericValue <= 24.9) dietScore += 0;
-                else if (obj.NumericValue <= 29.9) dietScore += 1;
-                else if (obj.NumericValue <= 39.9) dietScore += 2;
-                else dietScore += 3;
-                console.log("BMI Numberic value is " + obj.NumericValue);
+                currentDate = new Date(Date.parse(obj.CreatedDate));
+                maxBMIDate = maxBMIDate < currentDate ? currentDate : maxBMIDate;
+                if (obj.CreatedDate == maxBMIDate) {
+                    if (obj.NumericValue < 18.5) dietScore += 1;
+                    else if (obj.NumericValue <= 24.9) dietScore += 0;
+                    else if (obj.NumericValue <= 29.9) dietScore += 1;
+                    else if (obj.NumericValue <= 39.9) dietScore += 2;
+                    else dietScore += 3;
+                } else dietScore += 0;
             }
             //ADD DIABETES DIETSCORE
             //Whole Grain scores 
             if (obj.Name == "More Than Half Bread Whole Grain" && obj.ObservedValueText == "true") {
-                dietScore += 1;
-
+                currentDate = new Date(Date.parse(obj.CreatedDate));
+                maxGrainDate = maxGrainDate < currentDate ? currentDate : maxGrainDate;
+                dietScore += obj.CreatedDate == maxGrainDate ? 1 : 0;
             }
-
             // Unintentional Weight Score 
             if (obj.Name == 'Unintentional Weight Loss Or Gain') {
-
-                if (obj.ObservedValueText == 'No Weight Loss or Gain') dietScore += 0;
-                else if (obj.ObservedValueText == '1-2 lbs') dietScore += 1;
-                else if (obj.ObservedValueText == '3-5 lbs') dietScore += 2;
-                else if (obj.ObservedValueText == '7-10 lbs') dietScore += 3;
+                currentDate = new Date(Date.parse(obj.CreatedDate));
+                maxWeightDate = maxWeightDate < currentDate ? currentDate : maxWeightDate;
+                if (obj.CreatedDate == maxWeightDate) {
+                    if (obj.ObservedValueText == 'No Weight Loss or Gain') dietScore += 0;
+                    else if (obj.ObservedValueText == '1-2 lbs') dietScore += 1;
+                    else if (obj.ObservedValueText == '3-5 lbs') dietScore += 2;
+                    else if (obj.ObservedValueText == '7-10 lbs') dietScore += 3;
+                } else dietScore += 0;
 
             }
 
