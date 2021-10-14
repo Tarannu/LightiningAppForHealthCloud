@@ -3,7 +3,8 @@ import { getRecord } from 'lightning/uiRecordApi';
 import getCareObservation from '@salesforce/apex/HealthBehavior.relatedObservation';
 const FIELDS = [
     'Account.Name',
-    'Account.Care_Plan_Recommendations__pc'
+    'Account.Care_Plan_Recommendations__pc',
+    'Account.Needs_Alcohol_Consumption_Care_Plan__pc'
 ]
 
 export default class HealthBehaviorDisplay extends LightningElement {
@@ -18,6 +19,20 @@ export default class HealthBehaviorDisplay extends LightningElement {
 
     get name() {
         return this.account.data.fields.Name.value;
+    }
+    get alcoholFlag() {
+        var xmlString = this.account.data.fields.Needs_Alcohol_Consumption_Care_Plan__pc.value;
+        if (xmlString != null) {
+            var needsAlcoholFlag = {
+                src: xmlString.substring(9, 37),
+                alt: xmlString.substring(41, 47),
+                body: 0
+            }
+        }
+
+        console.log("Alcohol flag is " + needsAlcoholFlag.src);
+        //return "work in progress";
+        return needsAlcoholFlag;
     }
     get carePlanRecommendations() {
         return this.account.data.fields.Care_Plan_Recommendations__pc.value;

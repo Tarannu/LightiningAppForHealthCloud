@@ -1,11 +1,14 @@
 <template>
-   <lightning-card title="Health Behavior" icon-name="custom:custom14">
+   <lightning-card title="Health Score" icon-name="custom:custom14">
       <template if:true={account.data}>
          <div class="slds-m-around_medium">
-            <p><strong>{name}</strong> has following care plan reccomendations
-              <span class="carePlan"> {carePlanRecommendations}</span></p>
+            <div><strong>{name}</strong> has the following care plan reccomendations
+                <span class="carePlan"> {carePlanRecommendations}</span>
+                </div>
+            </div>
          </div>
       </template>
+
 <template if:true={careObsList.data}>
 
          <div class="slds-m-around_medium">
