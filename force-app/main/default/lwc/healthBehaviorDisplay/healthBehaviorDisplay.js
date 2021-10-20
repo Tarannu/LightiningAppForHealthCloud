@@ -183,13 +183,14 @@ export default class HealthBehaviorDisplay extends LightningElement {
             }
         })
         var output3 = response3.find(obj => {
-                // DIABETES condtion
-                if (obj.ConditionCodeId == '0iP8H000000001nUAA') {
-                    dietScore += 1;
-                }
-                // TO DO : ADD Cancer and Q3 conditions when code sets are added
-            })
-            //Deciding diet score
+            // DIABETES condtion
+            if (obj.ConditionCodeId == '0iP8H000000001nUAA') {
+                dietScore += 1;
+            }
+            // TO DO : ADD Cancer and Q3 conditions when code sets are added
+        })
+
+        //Deciding diet score
         if (dietScore < 20) {
             result.score = 'Excellent';
             result.value = dietScore;
