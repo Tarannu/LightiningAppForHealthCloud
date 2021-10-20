@@ -6,13 +6,13 @@
                 <span class="carePlan"> {carePlanRecommendations}</span>
                 </div>
             </div>
-         </div>
+         
       </template>
 
 <template if:true={careObsList.data}>
 
          <div class="slds-m-around_medium">
-            <p>The dietary Habit Score is <span class={careObservation.score}><strong>{careObservation.score}</strong></span> [ <strong> { careObservation.value }</strong> ]</p>
+            <p>The dietary Habit Score is <span class={totalDietScore.score}><strong>{totalDietScore.score}</strong></span> [ <strong> { careObservation.value }</strong> ]</p>
          </div>
       </template>
 

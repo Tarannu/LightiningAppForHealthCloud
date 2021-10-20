@@ -1,16 +1,14 @@
-public with sharing class HealthBehavior {
+public with sharing class LWCObservation {
     @AuraEnabled(cacheable=true)
     public static List<CareObservation> relatedObservation(Id accountId){
         
         List <CareObservation> careObs = [
             SELECT Name, NumericValue, ObservedSubjectId,ObservedValueText,CreatedDate
-            FROM CareObservation 
+            FROM CareObservation   
             Where ObservedSubjectId = :accountId
             WITH SECURITY_ENFORCED
             ];
         System.debug('The care obs are '+careObs);
         return careObs;
     }
-          
-    
 }

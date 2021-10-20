@@ -1,6 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
-import getCareObservation from '@salesforce/apex/HealthBehavior.relatedObservation';
+import getCareObservations from '@salesforce/apex/LWCObservation.relatedObservation';
+import getHealthConditions from '@salesforce/apex/LWCHealthCondition.relatedCondtions';
+import getCareDeterminants from '@salesforce/apex/LWCCareDeterminant.relatedCareDeterminants';
 const FIELDS = [
     'Account.Name',
     'Account.Care_Plan_Recommendations__pc',
@@ -10,35 +12,30 @@ const FIELDS = [
 export default class HealthBehaviorDisplay extends LightningElement {
 
     @api recordId;
+    // ADD DIABETES DIETSCORE from healthdiagnosis object
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     account;
 
-    @wire(getCareObservation, { accountId: '$recordId' })
+    @wire(getCareObservations, { accountId: '$recordId' })
     careObsList;
+
+    @wire(getHealthConditions, { accountId: '$recordId' })
+    healthConditionList;
+
+    @wire(getCareDeterminants, { accountId: '$recordId' })
+    careDeterminantList;
 
     get name() {
         return this.account.data.fields.Name.value;
     }
-    get alcoholFlag() {
-        var xmlString = this.account.data.fields.Needs_Alcohol_Consumption_Care_Plan__pc.value;
-        if (xmlString != null) {
-            var needsAlcoholFlag = {
-                src: xmlString.substring(9, 37),
-                alt: xmlString.substring(41, 47),
-                body: 0
-            }
-        }
-
-        console.log("Alcohol flag is " + needsAlcoholFlag.src);
-        //return "work in progress";
-        return needsAlcoholFlag;
-    }
     get carePlanRecommendations() {
         return this.account.data.fields.Care_Plan_Recommendations__pc.value;
     }
-    get careObservation() {
-        var response = JSON.parse(JSON.stringify(this.careObsList.data));
+    get totalDietScore() {
+        var response1 = JSON.parse(JSON.stringify(this.careObsList.data));
+        var response2 = JSON.parse(JSON.stringify(this.careDeterminantList.data));
+        var response3 = JSON.parse(JSON.stringify(this.healthConditionList.data));
         var dietScore = 0;
         var maxBMIDate = new Date("1961-10-10");
         var maxGrainDate = new Date("1961-10-10");
@@ -47,7 +44,7 @@ export default class HealthBehaviorDisplay extends LightningElement {
             score: '',
             value: 0
         };
-        var output = response.find(obj => {
+        var output1 = response1.find(obj => {
             // ADD CreatedDate logic to find latest input
             var currentDate;
             // BMI Dietscore
@@ -62,7 +59,6 @@ export default class HealthBehaviorDisplay extends LightningElement {
                     else dietScore += 3;
                 } else dietScore += 0;
             }
-            //ADD DIABETES DIETSCORE
             //Whole Grain scores 
             if (obj.Name == "More Than Half Bread Whole Grain" && obj.ObservedValueText == "true") {
                 currentDate = new Date(Date.parse(obj.CreatedDate));
@@ -79,9 +75,7 @@ export default class HealthBehaviorDisplay extends LightningElement {
                     else if (obj.ObservedValueText == '3-5 lbs') dietScore += 2;
                     else if (obj.ObservedValueText == '7-10 lbs') dietScore += 3;
                 } else dietScore += 0;
-
             }
-
             // Fruit Score 
             if (obj.Name == 'Serving Of Fruits Per Day') {
                 if (obj.ObservedValueText == '0') dietScore += 5;
@@ -134,7 +128,6 @@ export default class HealthBehaviorDisplay extends LightningElement {
                 else if (obj.ObservedValueText == 'Fair') dietScore += 2;
                 else if (obj.ObservedValueText == 'Poor') dietScore += 3;
             }
-
             // Meals eaten per day score
             if (obj.Name == 'Meals Eaten Per Day') {
                 if (obj.ObservedValueText == '1 Meal') dietScore += 3;
@@ -142,8 +135,6 @@ export default class HealthBehaviorDisplay extends LightningElement {
                 else if (obj.ObservedValueText == '3 Meals') dietScore += 0;
                 else if (obj.ObservedValueText == '4+ Meals') dietScore += 1;
             }
-            // ADD NOT ENOUGH MONEY SCORE
-
             // Add Butter Frequency Score
             if (obj.Name == 'Butter Frequency') {
                 if (obj.ObservedValueText == 'Never') dietScore += 0;
@@ -179,23 +170,46 @@ export default class HealthBehaviorDisplay extends LightningElement {
                 else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
                 else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
             }
-            // Deciding diet score
-            if (dietScore < 17) { // add 3 if you add the money problem
-                result.score = 'Excellent';
-                result.value = dietScore;
-            } else if (dietScore < 32) { // add 3 if you add the money problem
-                result.score = 'Good';
-                result.value = dietScore;
-            } else if (dietScore < 47) { // add 3 if you add the money problem
-                result.score = 'Fair';
-                result.value = dietScore;
-            } else {
-                result.score = 'Poor';
-                result.value = dietScore;
+
+        })
+        var output2 = response2.find(obj => {
+            if (obj.value__c == 'Never') {
+                dietScore += 0;
+            } else if (obj.value__c == 'Rarely') {
+                dietScore += 1;
+            } else if (obj.value__c == 'Sometimes') {
+                dietScore += 2;
+            } else if (obj.value__c == 'Most of the time') {
+                dietScore += 3;
             }
         })
+        var output3 = response3.find(obj => {
+                // DIABETES condtion
+                if (obj.ConditionCodeId == '0iP8H000000001nUAA') {
+                    dietScore += 1;
+                }
+                // TO DO : ADD Cancer and Q3 conditions when code sets are added
+            })
+            // Deciding diet score
+        if (dietScore < 20) {
+            result.score = 'Excellent';
+            result.value = dietScore;
+        } else if (dietScore < 35) {
+            result.score = 'Good';
+            result.value = dietScore;
+        } else if (dietScore < 50) {
+            result.score = 'Fair';
+            result.value = dietScore;
+        } else {
+            result.score = 'Poor';
+            result.value = dietScore;
+        }
 
         return result;
+    }
+
+    get HealthScore() {
+
     }
 
 
