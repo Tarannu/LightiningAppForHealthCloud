@@ -1,6 +1,6 @@
 # Healthcloud Lightning App in DX: 
 
-The app is based on Salesforce DX. It takes in data from Salesforce objects such as account, contact and from Healthcloud the objects used are Care Observation, Care Determinants and Health Condtions. The data is utilized to display on the person account detail page to show the custom diet score and health caregory score. 
+The app is based on Salesforce DX. It takes in data from Salesforce objects such as account, contact and from Healthcloud the objects used are Care Observation, Care Determinants and Health Condtions. The data is utilized to display on the person account detail page to show the custom diet score and health caregory score. It also dislay the current Care Plan Reccomendations.
 
 ## How Do You Plan to Deploy Your Changes?
 
