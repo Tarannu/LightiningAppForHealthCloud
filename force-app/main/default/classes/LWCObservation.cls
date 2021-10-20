@@ -8,7 +8,7 @@ public with sharing class LWCObservation {
             Where ObservedSubjectId = :accountId
             WITH SECURITY_ENFORCED
             ];
-        System.debug('The care obs are '+careObs);
+        
         return careObs;
     }
 }

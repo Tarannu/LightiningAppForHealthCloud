@@ -42,7 +42,7 @@ export default class HealthBehaviorDisplay extends LightningElement {
         var maxWeightDate = new Date("1961-10-10");
         var result = {
             score: '',
-            value: 0
+            value: ''
         };
         var output1 = response1.find(obj => {
             // ADD CreatedDate logic to find latest input
@@ -170,16 +170,15 @@ export default class HealthBehaviorDisplay extends LightningElement {
                 else if (obj.ObservedValueText == 'Sometimes') dietScore += 2;
                 else if (obj.ObservedValueText == 'Most of the time') dietScore += 3;
             }
-
         })
         var output2 = response2.find(obj => {
-            if (obj.value__c == 'Never') {
+            if (obj.Value__c == 'Never') {
                 dietScore += 0;
-            } else if (obj.value__c == 'Rarely') {
+            } else if (obj.Value__c == 'Rarely') {
                 dietScore += 1;
-            } else if (obj.value__c == 'Sometimes') {
+            } else if (obj.Value__c == 'Sometimes') {
                 dietScore += 2;
-            } else if (obj.value__c == 'Most of the time') {
+            } else if (obj.Value__c == 'Most of the time') {
                 dietScore += 3;
             }
         })
@@ -190,7 +189,7 @@ export default class HealthBehaviorDisplay extends LightningElement {
                 }
                 // TO DO : ADD Cancer and Q3 conditions when code sets are added
             })
-            // Deciding diet score
+            //Deciding diet score
         if (dietScore < 20) {
             result.score = 'Excellent';
             result.value = dietScore;

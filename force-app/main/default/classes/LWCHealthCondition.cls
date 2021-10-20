@@ -8,7 +8,7 @@ public with sharing class LWCHealthCondition {
             Where PatientId = :accountId
             WITH SECURITY_ENFORCED
             ];
-        System.debug('The health conditions are '+healthCondition);
+        
         return healthCondition;
     }
 }
