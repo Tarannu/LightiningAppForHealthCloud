@@ -1,6 +1,6 @@
-# Salesforce DX Project: Next Steps
+# Healthcloud Lightning App in DX: 
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+The app is based on Salesforce DX. It takes in data from Salesforce objects such as account, contact and from Healthcloud the objects used are Care Observation, Care Determinants and Health Condtions. The data is utilized to display on the person account detail page to show the custom diet score and health caregory score. 
 
 ## How Do You Plan to Deploy Your Changes?
 
