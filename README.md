@@ -5,6 +5,15 @@ The app is based on Salesforce DX. It takes in data from Salesforce objects such
 ## How Do You Plan to Deploy Your Changes?
 
 Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+## Shortcut commands to deploy changes to you salesforce Org
+You first need to authorize your code to your salesforce org. Make sure you have added the Salesforce for visual studio extenstion to you visual studio. Using the command pallette,
+```
+SFDX: Authorize an Org
+SFDX: Deploy this to org 
+```
+authorize to your organization when prompted in the browser. 
+You deploy changes to or whenever a new change is there without errors.
+
 
 ## Configure Your Salesforce DX Project
 
